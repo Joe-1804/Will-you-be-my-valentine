@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For My Girl ❤️</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@400;700&display=swap');
+
+        :root {
+            --pink-bg: #ffe5ec;
+            --heart-color: #ff4d6d;
+            --dark-pink: #c9184a;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--pink-bg);
+            font-family: 'Quicksand', sans-serif;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        /* Falling Hearts */
+        .heart {
+            position: absolute;
+            color: var(--heart-color);
+            font-size: 20px;
+            top: -20px;
+            z-index: 0;
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            to { transform: translateY(110vh) rotate(360deg); }
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 40px;
+            border-radius: 30px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            z-index: 10;
+            max-width: 450px;
+            width: 90%;
+            position: relative;
+        }
+
+        h1 {
+            font-family: 'Dancing Script', cursive;
+            color: var(--dark-pink);
+            font-size: 3rem;
+            margin-bottom: 30px;
+        }
+
+        .btn-wrap {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            height: 60px;
+            align-items: center;
+        }
+
+        button {
+            padding: 12px 25px;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+
+        #yesBtn { background-color: #ff4d6d; color: white; }
+        #noBtn { 
+            background-color: #888; 
+            color: white; 
+            position: absolute; 
+        }
+
+        .hidden { display: none; }
+        
+        .dog-gif {
+            width: 220px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        #slowText {
+            font-size: 1.3rem;
+            color: #555;
+            opacity: 0;
+            transition: opacity 3s ease-in;
+        }
+
+        .quiz-btn {
+            display: block;
+            width: 100%;
+            margin: 10px 0;
+            background: white;
+            border: 2px solid var(--heart-color);
+            color: var(--dark-pink);
+        }
+
+        .quiz-btn:hover { background: #fff0f3; }
+
+        #feedback {
+            margin-top: 15px;
+            font-weight: bold;
+            min-height: 25px;
+        }
+
+        .success { color: #2d6a4f; }
+        .error { color: #c9184a; }
+    </style>
+</head>
+<body>
+
+    <div id="hearts-container"></div>
+
+    <!-- PHASE 1 -->
+    <div id="phase1" class="card">
+        <h1>Will you be my Valentine?</h1>
+        <div class="btn-wrap">
+            <button id="yesBtn" onclick="toPhase2()">Yes</button>
+            <button id="noBtn" onmouseover="moveNo()" onclick="moveNo()">No</button>
+        </div>
+    </div>
+
+    <!-- PHASE 2 -->
+    <div id="phase2" class="card hidden">
+        <h1 style="font-size: 2.5rem;">Not so fast!</h1>
+        <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExM3Z6ZnZiaHNobmZ1bmZxcXJ3eXh3eXh3eXh3eXh3eXh3eXh3JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/3o7527pa7qs9kCG78A/giphy.gif" class="dog-gif">
+        <p id="slowText">Not until you can answer these questions...</p>
+        <button id="continueBtn" class="hidden" onclick="startQuiz()" style="background:var(--heart-color); color:white;">Continue</button>
+    </div>
+
+    <!-- PHASE 3: QUIZ -->
+    <div id="phase3" class="card hidden">
+        <h2 id="qText" style="color:var(--dark-pink)">Question</h2>
+        <div id="options"></div>
+        <div id="feedback"></div>
+    </div>
+
+    <!-- PHASE 4: FINAL -->
+    <div id="phase4" class="card hidden">
+        <h1>Congratulations! ❤️</h1>
+        <p style="font-size: 1.5rem; color: var(--dark-pink); font-family: 'Dancing Script', cursive;">
+            You are officially my beautiful little valentine!
+        </p>
+        <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHpueW9idXpsZ3B4Ym9pZzRreHlsbm05NHZ6eHh4eHh4eHh4eHh4JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/KzDqC8fXoK99u/giphy.gif" width="150">
+    </div>
+
+    <script>
+        // Falling Hearts
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            heart.innerHTML = '❤️';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = (Math.random() * 2 + 3) + 's';
+            document.getElementById('hearts-container').appendChild(heart);
+            setTimeout(() => heart.remove(), 5000);
+        }
+        setInterval(createHeart, 300);
+
+        // No Button Logic
+        function moveNo() {
+            const btn = document.getElementById('noBtn');
+            const x = Math.random() * (window.innerWidth - btn.offsetWidth);
+            const y = Math.random() * (window.innerHeight - btn.offsetHeight);
+            btn.style.left = x + 'px';
+            btn.style.top = y + 'px';
+        }
+
+        // Phase Transitions
+        function toPhase2() {
+            document.getElementById('phase1').classList.add('hidden');
+            document.getElementById('phase2').classList.remove('hidden');
+            setTimeout(() => {
+                document.getElementById('slowText').style.opacity = '1';
+                setTimeout(() => {
+                    document.getElementById('continueBtn').classList.remove('hidden');
+                }, 2500);
+            }, 500);
+        }
+
+        // Quiz Logic
+        const questions = [
+            {
+                q: "What is the best moment in Mussoorie?",
+                options: ["Dancing in the room watching the winterline", "Eating the best mutton dumpling", "Trekking the dalai hills"],
+                correct: 0,
+                win: "Damn u fine girl, good memory! 😍",
+                lose: "Wrong! Now you owe me one long kiss! 💋"
+            },
+            {
+                q: "What attire was I wearing when I first saw you at college?",
+                options: ["Saree", "Churidar", "Jeans and top"],
+                correct: 0,
+                win: "Correct! I was mesmerized. 🔥",
+                lose: "Nope! You owe me my favorite food now! 🍔"
+            },
+            {
+                q: "What is my favorite junk food?",
+                options: ["Pizza", "Burger", "Steak"],
+                correct: 1,
+                win: "You know me so well! ❤️",
+                lose: "Incorrect! That's a penalty. You owe me a treat! 🍟"
+            }
+        ];
+
+        let currentQ = 0;
+
+        function startQuiz() {
+            document.getElementById('phase2').classList.add('hidden');
+            document.getElementById('phase3').classList.remove('hidden');
+            loadQ();
+        }
+
+        function loadQ() {
+            const data = questions[currentQ];
+            document.getElementById('qText').innerText = data.q;
+            const optDiv = document.getElementById('options');
+            optDiv.innerHTML = '';
+            document.getElementById('feedback').innerText = '';
+
+            data.options.forEach((opt, i) => {
+                const b = document.createElement('button');
+                b.className = 'quiz-btn';
+                b.innerText = opt;
+                b.onclick = () => check(i);
+                optDiv.appendChild(b);
+            });
+        }
+
+        function check(i) {
+            const data = questions[currentQ];
+            const feed = document.getElementById('feedback');
+            if(i === data.correct) {
+                feed.innerHTML = `<span class="success">${data.win}</span>`;
+            } else {
+                feed.innerHTML = `<span class="error">${data.lose}</span>`;
+            }
+
+            setTimeout(() => {
+                currentQ++;
+                if(currentQ < questions.length) loadQ();
+                else {
+                    document.getElementById('phase3').classList.add('hidden');
+                    document.getElementById('phase4').classList.remove('hidden');
+                }
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
